@@ -1,4 +1,25 @@
 
+                //I made a Board_Piece Class, but I realized I wasn't sure
+                //how we would name each new instance of the class since
+                //we won't necessarily know the size of the gameboard as well
+                //as a 20x20 would require us to name 400 pieces..sounds
+                //awful. Instead, I'm thinking we create a second point array
+                //from the java.awt.Point class. This one would be
+                //identical to the 'array' array you created (we should rename
+                //this to boardArray or something similar).
+                //pieceArray[i][j] would hold the point location of where it
+                //is pointing to based on the direction it is facing.
+                //HOWEVER, since we will have to figure out which way each
+                //piece is facing, it may be less resource heavy to calculate
+                //each piece as needed (ie when the player selects a piece and
+                //we need to traverse the run/trail). This would eliminate the
+                //need to keep track of which piece is being pointed to.
+                //I pretty much just went in a complete circle...
+                //Lastly, I could not get the arrow images to show when I
+                //ran the applet. I used your original code and this code
+                //with no luck. I also commented any changes I made or any
+                //areas I didn't understand. Read through below...JD 09/12/14
+
 package jmgames;
 
 import java.applet.*;
@@ -74,8 +95,8 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
 //******************************************************************************  
     public void paint(Graphics g) 
     {
-        x = 1;
-        y = 1;
+        x = 1;//why? JD 9/12/14
+        y = 1;//why? JD 9/12/14
         dx = 0;
         dy = 0;
         tr = new MediaTracker(this);
@@ -89,14 +110,17 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
 
             for (int j = 0; j < array[i].length; j++) 
             {
-                if(array[i][j] == 'U')
+                //Not sure why you have 'U' twice??? JD 9/12/14
+                /*if(array[i][j] == 'U')
                 {
                     tr.addImage(arrowUp,0);
                     g.drawImage(arrowUp, dx, dy, this);
-                }
+                }*/
+                //Would a switch be better? JD 9/12/14
                 if(array[i][j] == 'U')
                 {
-                    tr.addImage(arrowUp,0);
+                    tr.addImage(arrowUp,0);//I'm assuming you want each of these four images to have the
+                                            //same priority... JD 9/12/14
                     g.drawImage(arrowUp, dx, dy, this);
                 }
                 if(array[i][j] == 'D')
@@ -130,9 +154,10 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
             {
                 int x = rnd.nextInt(4);
                 
-                array[0][0] = 'U';
-                array[0][19] = 'R';
-                
+                //No need to assign these two over and over again...moved them outside the for loops JD 09/12/14
+                //array[0][0] = 'U';
+                //array[0][19] = 'R';
+
                 switch(x)
                 {
                     case 0: array[i][j] = 'U';
@@ -149,6 +174,8 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
                 }
             }
         }
+        array[0][0] = 'U';//Moved them here JD 09/12/14
+        array[0][19] = 'R';
     }
 //****************************************************************************** 
     public void game()
