@@ -12,7 +12,7 @@ import java.util.Random;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 public class Conquest_Applet extends Applet implements Runnable, KeyListener, MouseListener
 {
-    private boolean game = true;
+    private boolean gameOver = true;
     private int dx,dy;
     private int mouseX, mouseY;
     private final String[][] array = new String[20][20];
@@ -53,7 +53,7 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
     @Override
     public void run()
     {
-        while(!game)
+        while(!gameOver)
         {     
             repaint();
             game();
@@ -138,11 +138,6 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
             {
                 int caseVar = rnd.nextInt(4);
                 
-                //initial Player piece
-                array[0][0] = "PU";
-                //initial Computer piece
-                array[0][19] = "CR";
-                
                 switch(caseVar)
                 {
                     case 0: array[i][j] = "U";
@@ -159,6 +154,11 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
                 }
             }
         }
+        //initial Player piece
+         array[0][0] = "PU";
+        //initial Computer piece
+        array[0][19] = "CR";
+                
     }
 //****************************************************************************** 
     public void game()
