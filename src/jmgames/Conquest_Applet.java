@@ -13,9 +13,9 @@ import java.util.Random;
 public class Conquest_Applet extends Applet implements Runnable, KeyListener, MouseListener
 {
     private boolean game = true;
-    private int x,y,dx,dy;
+    private int dx,dy;
     private int mouseX, mouseY;
-    private final char[][] array = new char[20][20];
+    private final String[][] array = new String[20][20];
     private final Random rnd = new Random();
     Image arrowUp, arrowDown, arrowLeft, arrowRight;
     Image arrowUpPlayer, arrowDownPlayer, arrowLeftPlayer, arrowRightPlayer;
@@ -25,13 +25,14 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
 //******************************************************************************
     @Override
     public void init()
-    {
-         
+    {        
         setSize(800, 800);
         setBackground(Color.GRAY);
         setFocusable(true);
         Frame frame = (Frame) this.getParent().getParent();
         frame.setTitle("Conquest Game");
+        frame.setMenuBar(null);
+
         addMouseListener(this);
     }
 //******************************************************************************    
@@ -55,6 +56,7 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
         while(!game)
         {     
             repaint();
+            game();
             try
             {
                 Thread.sleep(17);
@@ -72,10 +74,9 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
 
     }
 //******************************************************************************  
+    @Override
     public void paint(Graphics g) 
     {
-        x = 1;
-        y = 1;
         dx = 0;
         dy = 0;
         tr = new MediaTracker(this);
@@ -83,33 +84,40 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
         arrowLeft = getImage(getCodeBase(), "images/arrowleft.png");
         arrowDown = getImage(getCodeBase(), "images/arrowDown.png");
         arrowRight = getImage(getCodeBase(), "images/arrowRight.png");
+        arrowUpPlayer = getImage(getCodeBase(), "images/arrowUpPlayer.png");
+        arrowRightPlayer = getImage(getCodeBase(), "images/arrowRightPlayer.png");
         
         for (int i = 0; i < array.length; i++) 
         {
 
             for (int j = 0; j < array[i].length; j++) 
             {
-                if(array[i][j] == 'U')
+                if(array[i][j].equals("CR"))
+                {
+                    tr.addImage(arrowRightPlayer,0);
+                    g.drawImage(arrowRightPlayer, dx, dy, this);
+                }
+                if(array[i][j].equals("PU"))
+                {
+                    tr.addImage(arrowUpPlayer,0);
+                    g.drawImage(arrowUpPlayer, dx, dy, this);
+                }
+                if(array[i][j].equals("U"))
                 {
                     tr.addImage(arrowUp,0);
                     g.drawImage(arrowUp, dx, dy, this);
                 }
-                if(array[i][j] == 'U')
-                {
-                    tr.addImage(arrowUp,0);
-                    g.drawImage(arrowUp, dx, dy, this);
-                }
-                if(array[i][j] == 'D')
+                if(array[i][j].equals("D"))
                 {
                     tr.addImage(arrowDown,0);
                     g.drawImage(arrowDown, dx, dy, this);
                 }
-                if(array[i][j] == 'R')
+                if(array[i][j].equals("R"))
                 {
                     tr.addImage(arrowRight,0);
                     g.drawImage(arrowRight, dx, dy, this);
                 }
-                if(array[i][j] == 'L')
+                if(array[i][j].equals("L"))
                 {
                     tr.addImage(arrowLeft,0);
                     g.drawImage(arrowLeft, dx, dy, this);
@@ -128,23 +136,25 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
         {
             for(int j = 0; j < array[i].length; j++)
             {
-                int x = rnd.nextInt(4);
+                int caseVar = rnd.nextInt(4);
                 
-                array[0][0] = 'U';
-                array[0][19] = 'R';
+                //initial Player piece
+                array[0][0] = "PU";
+                //initial Computer piece
+                array[0][19] = "CR";
                 
-                switch(x)
+                switch(caseVar)
                 {
-                    case 0: array[i][j] = 'U';
+                    case 0: array[i][j] = "U";
                         break;
                         
-                    case 1: array[i][j] = 'D';
+                    case 1: array[i][j] = "D";
                         break;
                         
-                    case 2: array[i][j] = 'L';
+                    case 2: array[i][j] = "L";
                         break;
                         
-                    case 3: array[i][j] = 'R';
+                    case 3: array[i][j] = "R";
                         break;                             
                 }
             }
@@ -152,6 +162,11 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
     }
 //****************************************************************************** 
     public void game()
+    {
+
+    }
+ //******************************************************************************
+    public void rotate()
     {
         
     }
@@ -162,18 +177,23 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
         switch (e.getKeyCode()) 
         {
             case KeyEvent.VK_UP:
+                System.out.println("Move up");
                 break;
 
             case KeyEvent.VK_DOWN:
+                System.out.println("Move down");
                 break;
 
             case KeyEvent.VK_LEFT:
+                System.out.println("Move left");
                 break;
 
             case KeyEvent.VK_RIGHT:
+                System.out.println("Move right");
                 break;
 
             case KeyEvent.VK_SPACE:
+                System.out.println("Rotate Tile");
                 break;
         }
     }
@@ -201,7 +221,7 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
     {
         mouseX = e.getX();
         mouseY = e.getY();
-        System.out.println(mouseX+" ,"+mouseY);
+        System.out.println(mouseX+", "+mouseY);
     }
 //****************************************************************************** 
     @Override
