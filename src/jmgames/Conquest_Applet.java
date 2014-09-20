@@ -1,4 +1,3 @@
-
 package jmgames;
 
 import java.applet.*;
@@ -15,10 +14,13 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
     private boolean gameOver = true;
     private int dx,dy;
     private int mouseX, mouseY;
-    private final String[][] array = new String[20][20];
+    private final int boardSize = 5;
+    private final String[][] boardArray = new String[boardSize][boardSize];
     private final Random rnd = new Random();
     Image arrowUp, arrowDown, arrowLeft, arrowRight;
     Image arrowUpPlayer, arrowDownPlayer, arrowLeftPlayer, arrowRightPlayer;
+    Image arrowUpComputer, arrowDownComputer, arrowLeftComputer,
+            arrowRightComputer;
     MediaTracker tr;
     
     
@@ -26,7 +28,7 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
     @Override
     public void init()
     {        
-        setSize(800, 800);
+        setSize(boardArray.length * 40, boardArray.length * 40);
         setBackground(Color.GRAY);
         setFocusable(true);
         Frame frame = (Frame) this.getParent().getParent();
@@ -81,46 +83,79 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
         dy = 0;
         tr = new MediaTracker(this);
         arrowUp = getImage(getCodeBase(), "images/arrowUp.png");
-        arrowLeft = getImage(getCodeBase(), "images/arrowleft.png");
         arrowDown = getImage(getCodeBase(), "images/arrowDown.png");
+        arrowLeft = getImage(getCodeBase(), "images/arrowleft.png");
         arrowRight = getImage(getCodeBase(), "images/arrowRight.png");
-        arrowUpPlayer = getImage(getCodeBase(), "images/arrowUpPlayer.png");
-        arrowRightPlayer = getImage(getCodeBase(), "images/arrowRightPlayer.png");
         
-        for (int i = 0; i < array.length; i++) 
+        arrowUpPlayer = getImage(getCodeBase(), "images/arrowUpPlayer.png");
+        arrowDownPlayer = getImage(getCodeBase(), "images/arrowDownPlayer.png");
+        arrowLeftPlayer = getImage(getCodeBase(), "images/arrowleftPlayer.png");
+        arrowRightPlayer = getImage(getCodeBase(), "images/arrowRightPlayer.png");
+
+        arrowUpComputer = getImage(getCodeBase(), "images/arrowUpComputer.png");
+        arrowLeftComputer = getImage(getCodeBase(), "images/arrowleftComputer.png");
+        arrowDownComputer = getImage(getCodeBase(), "images/arrowDownComputer.png");
+        arrowRightComputer = getImage(getCodeBase(), "images/arrowRightComputer.png");
+        
+        
+        
+        
+        for (int i = 0; i < boardArray.length; i++) 
         {
 
-            for (int j = 0; j < array[i].length; j++) 
+            for (int j = 0; j < boardArray[i].length; j++) 
             {
-                if(array[i][j].equals("CR"))
-                {
-                    tr.addImage(arrowRightPlayer,0);
-                    g.drawImage(arrowRightPlayer, dx, dy, this);
-                }
-                if(array[i][j].equals("PU"))
-                {
-                    tr.addImage(arrowUpPlayer,0);
-                    g.drawImage(arrowUpPlayer, dx, dy, this);
-                }
-                if(array[i][j].equals("U"))
-                {
-                    tr.addImage(arrowUp,0);
-                    g.drawImage(arrowUp, dx, dy, this);
-                }
-                if(array[i][j].equals("D"))
-                {
-                    tr.addImage(arrowDown,0);
-                    g.drawImage(arrowDown, dx, dy, this);
-                }
-                if(array[i][j].equals("R"))
-                {
-                    tr.addImage(arrowRight,0);
-                    g.drawImage(arrowRight, dx, dy, this);
-                }
-                if(array[i][j].equals("L"))
-                {
-                    tr.addImage(arrowLeft,0);
-                    g.drawImage(arrowLeft, dx, dy, this);
+                switch(boardArray[i][j]){
+                    case "CU":
+                        tr.addImage(arrowUpComputer,0);
+                        g.drawImage(arrowUpComputer, dx, dy, this);
+                        break;
+                    case "CD":
+                        tr.addImage(arrowDownComputer,0);
+                        g.drawImage(arrowDownComputer, dx, dy, this);
+                        break;
+                    case "CR":
+                        tr.addImage(arrowRightComputer,0);
+                        g.drawImage(arrowRightComputer, dx, dy, this);
+                        break;
+                    case "CL":
+                        tr.addImage(arrowLeftComputer,0);
+                        g.drawImage(arrowLeftComputer, dx, dy, this);
+                        break;
+                    case "PU":
+                        tr.addImage(arrowUpPlayer,0);
+                        g.drawImage(arrowUpPlayer, dx, dy, this);
+                        break;
+                    case "PD":
+                        tr.addImage(arrowDownPlayer,0);
+                        g.drawImage(arrowDownPlayer, dx, dy, this);
+                        break;
+                    case "PR":
+                        tr.addImage(arrowRightPlayer,0);
+                        g.drawImage(arrowRightPlayer, dx, dy, this);
+                        break;
+                    case "PL":
+                        tr.addImage(arrowLeftPlayer,0);
+                        g.drawImage(arrowLeftPlayer, dx, dy, this);
+                        break;
+                    case "U":
+                        tr.addImage(arrowUp,0);
+                        g.drawImage(arrowUp, dx, dy, this);
+                        break;
+                    case "D":
+                        tr.addImage(arrowDown,0);
+                        g.drawImage(arrowDown, dx, dy, this);
+                        break;
+                    case "R":
+                        tr.addImage(arrowRight,0);
+                        g.drawImage(arrowRight, dx, dy, this);
+                        break;
+                    case "L":
+                        tr.addImage(arrowLeft,0);
+                        g.drawImage(arrowLeft, dx, dy, this);
+                        break;
+                    default:
+                        System.out.println("Error. No image direction given.");
                 }
                dx += 40;
             }
@@ -132,40 +167,44 @@ public class Conquest_Applet extends Applet implements Runnable, KeyListener, Mo
 //******************************************************************************   
     public void buildBoard()
     {
-        for(int i = 0; i < array.length; i++)
+        for(int i = 0; i < boardArray.length; i++)
         {
-            for(int j = 0; j < array[i].length; j++)
+            for(int j = 0; j < boardArray[i].length; j++)
             {
                 int caseVar = rnd.nextInt(4);
                 
                 switch(caseVar)
                 {
-                    case 0: array[i][j] = "U";
+                    case 0: boardArray[i][j] = "U";
                         break;
                         
-                    case 1: array[i][j] = "D";
+                    case 1: boardArray[i][j] = "D";
                         break;
                         
-                    case 2: array[i][j] = "L";
+                    case 2: boardArray[i][j] = "L";
                         break;
                         
-                    case 3: array[i][j] = "R";
+                    case 3: boardArray[i][j] = "R";
                         break;                             
                 }
             }
         }
         //initial Player piece
-         array[0][0] = "PU";
+        boardArray[0][0] = "PU";
         //initial Computer piece
-        array[0][19] = "CR";
+        boardArray[boardArray.length-1][boardArray.length-1] = "CR";
                 
     }
 //****************************************************************************** 
+    public void nextLocation(int x, int y){
+        
+    }
+//******************************************************************************
     public void game()
     {
 
     }
- //******************************************************************************
+//******************************************************************************
     public void rotate()
     {
         
